@@ -1,7 +1,7 @@
 {
   "name": "Hub IA RD",
   "short_name": "MeusAppsIA",
-  "start_url": "index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#111827",
