@@ -65,7 +65,7 @@
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
                 const CONTEXTO = "Crocheteira: Debora Santos - Art Croche. TOM: Profissional e Amigável. CTA: Link na Bio.";
-                const promptFinal = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags. Retorne SOMENTE a legenda pronta para uso, sem comentários adicionais.`;
+                const promptFinal = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda em português para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags. Retorne SOMENTE a legenda pronta para uso, sem comentários adicionais.`;
 
                 const result = await model.generateContent(promptFinal);
                 const response = await result.response;
