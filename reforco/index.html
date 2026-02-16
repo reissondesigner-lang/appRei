@@ -6,7 +6,6 @@
     <title>Mestra de Reforço</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Bloqueia o scroll do corpo para evitar que o layout suba de forma errada */
         html, body {
             height: 100%;
             margin: 0;
@@ -16,19 +15,25 @@
             width: 100%;
         }
         
-        /* Ajuste fino para a altura dinâmica (Fallback para navegadores antigos) */
-        .h-dvh {
-            height: 100vh;
-            height: 100dvh;
+        .h-dvh { height: 100vh; height: 100dvh; }
+
+        /* Animação de Digitando */
+        .typing-dots { display: inline-flex; align-items: center; gap: 4px; }
+        .dot {
+            width: 6px; height: 6px; background: #4f46e5; border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
         }
 
-        /* Deixa a barra de rolagem mais discreta (opcional) */
-        #chat::-webkit-scrollbar {
-            width: 4px;
-        }
-        #chat::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 10px;
+        /* Ajuste para não esconder conteúdo atrás da "notch" ou barras do sistema */
+        .safe-bottom {
+            padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
         }
     </style>
 </head>
@@ -36,7 +41,7 @@
 
     <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md shrink-0">
         <a href="../index.html" class="hover:underline">← Voltar</a>
-        <h1 class="font-bold">Mestra de Reforço</h1>
+        <h1 class="font-bold">Aula de Reforço</h1>
     </div>
 
     <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -45,14 +50,20 @@
         </div>
     </div>
 
-    <div class="p-4 bg-white border-t shrink-0">
-        <div class="max-w-4xl mx-auto">
-            <input type="text" id="input" placeholder="Dúvida do aluno..." 
-                   class="w-full border p-4 rounded-2xl mb-2 outline-none focus:border-indigo-500 shadow-sm"
-                   autocomplete="off">
+    <div class="p-3 bg-white border-t shrink-0 safe-bottom">
+        <div class="max-w-4xl mx-auto flex items-center gap-2">
+            <input type="search" id="input" placeholder="Dúvida..." 
+                   class="flex-1 border p-3 rounded-full outline-none focus:border-indigo-500 shadow-sm bg-gray-50"
+                   autocomplete="off" 
+                   autocorrect="off" 
+                   spellcheck="false"
+                   name="q">
+            
             <button onclick="enviar()" id="btn" 
-                    class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold active:bg-indigo-700 transition-colors">
-                Ensinar Agora
+                    class="bg-indigo-600 text-white p-3 rounded-full font-bold active:scale-90 transition-transform flex items-center justify-center w-12 h-12 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9-2-9-18-9 18 9 2zm0 0v-8" />
+                </svg>
             </button>
         </div>
     </div>
@@ -69,38 +80,43 @@
             const texto = input.value.trim();
             if (!texto || !apiKey) return;
 
-            // Limpa input e trava botão
             input.value = "";
             btn.disabled = true;
-            input.focus(); // Mantém o teclado aberto no celular
+            input.focus();
 
-            // 1. Mostra a pergunta do usuário
-            chat.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm"><b>Você:</b> ${texto}</div></div>`;
+            // 1. Pergunta do usuário
+            chat.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm">
+                        ${texto}
+                    </div>
+                </div>`;
             
-            // 2. Cria o indicador de aguarde
+            // 2. Indicador de digitando
             const aguarde = document.createElement("div");
             aguarde.id = "status-aguarde";
-            aguarde.innerText = "Pensando na melhor explicação...";
-            aguarde.className = "text-gray-500 italic p-2 text-sm";
+            aguarde.className = "flex justify-start mb-4";
+            aguarde.innerHTML = `
+                <div class="bg-white border border-indigo-100 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-3">
+                    <div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>`;
             chat.appendChild(aguarde);
             chat.scrollTop = chat.scrollHeight;
 
             try {
                 const genAI = new GoogleGenerativeAI(apiKey);
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
                 
                 const result = await model.generateContent(texto);
                 const response = await result.response;
                 const respostaTexto = response.text();
 
-                // 3. Remove o "aguarde..."
                 const status = document.getElementById("status-aguarde");
                 if (status) status.remove();
                 
-                // 4. Mostra a resposta com formatação simples
                 chat.innerHTML += `
                     <div class="flex justify-start">
-                        <div class="bg-white border border-indigo-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm">
+                        <div class="bg-white border border-indigo-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm leading-relaxed text-gray-800">
                             ${respostaTexto.replace(/\n/g, '<br>')}
                         </div>
                     </div>`;
@@ -115,7 +131,6 @@
             }
         }
 
-        // Permitir envio com a tecla Enter
         document.getElementById("input").addEventListener("keypress", (e) => {
             if (e.key === "Enter") window.enviar();
         });
