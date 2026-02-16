@@ -6,78 +6,93 @@
     <title>Mestra de Reforço</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Estrutura infalível para mobile */
+        /* Bloqueio de scroll elástico e fixação do palco */
         html, body {
-            height: 100%;
-            width: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Evita o scroll da página inteira */
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            background-color: #f5f3ff; /* bg-indigo-50 */
         }
 
-        body {
+        #app-container {
             display: flex;
             flex-direction: column;
-            /* Suporte para navegadores que não entendem dvh */
-            height: 100vh; 
-            height: 100dvh; 
+            width: 100%;
+            height: 100%; /* Será ajustado via JS para precisão total */
         }
 
         #chat {
-            flex: 1 1 auto;
+            flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding: 1rem;
         }
 
-        .footer-container {
-            flex: 0 0 auto;
+        footer {
+            flex-shrink: 0;
             background: white;
             border-top: 1px solid #e5e7eb;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Esconde ícones chatos de preenchimento do Chrome/Safari */
-        input::-webkit-contacts-auto-fill-button,
-        input::-webkit-credentials-auto-fill-button {
-            visibility: hidden;
-            display: none !important;
-            pointer-events: none;
+        /* Animação de Digitando */
+        .typing-dots { display: inline-flex; align-items: center; gap: 4px; }
+        .dot {
+            width: 6px; height: 6px; background: #4f46e5; border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
         }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
+        }
+
+        /* Evita Zoom automático no iPhone e limpa inputs */
+        input { font-size: 16px !important; }
+        input::-webkit-search-decoration,
+        input::-webkit-search-cancel-button,
+        input::-webkit-search-results-button,
+        input::-webkit-search-results-decoration { display: none; }
     </style>
 </head>
-<body class="bg-indigo-50 text-gray-900">
+<body class="text-gray-900">
 
-    <header class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md">
-        <a href="../index.html">← Voltar</a>
-        <h1 class="font-bold text-sm">Mestra de Reforço</h1>
-    </header>
+    <div id="app-container">
+        <header class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md shrink-0">
+            <a href="../index.html" class="text-sm font-medium">← Voltar</a>
+            <h1 class="font-bold">Mestra de Reforço</h1>
+            <div class="w-10"></div> </header>
 
-    <main id="chat" class="p-4 space-y-4">
-        <div class="bg-indigo-100 p-3 rounded-lg text-xs text-indigo-800 italic">
-            Olá! O que vamos aprender hoje?
-        </div>
-    </main>
+        <main id="chat" class="space-y-4">
+            <div class="bg-indigo-100 p-3 rounded-2xl rounded-tl-none text-sm text-indigo-800 italic max-w-[85%] shadow-sm">
+                Olá! Qual assunto você quer que eu explique hoje?
+            </div>
+        </main>
 
-    <footer class="footer-container">
-        <div class="max-w-4xl mx-auto p-3 flex items-center gap-2">
-            <input type="text" id="input" placeholder="Dúvida..." 
-                   class="flex-1 border p-3 rounded-full outline-none focus:border-indigo-500 shadow-sm bg-gray-50 text-base"
-                   autocomplete="off" 
-                   autocorrect="off" 
-                   spellcheck="false">
-            
-            <button onclick="enviar()" id="btn" 
-                    class="bg-indigo-600 text-white p-3 rounded-full font-bold active:scale-90 transition-transform flex items-center justify-center w-11 h-11 shadow-lg shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9-2-9-18-9 18 9 2zm0 0v-8" />
-                </svg>
-            </button>
-        </div>
-    </footer>
+        <footer class="p-3">
+            <div class="max-w-4xl mx-auto flex items-center gap-2">
+                <input type="text" id="input" placeholder="Dúvida do aluno..." 
+                       class="flex-1 border p-3 rounded-full outline-none focus:border-indigo-500 shadow-sm bg-gray-50"
+                       autocomplete="off" autocorrect="off" spellcheck="false">
+                
+                <button onclick="enviar()" id="btn" 
+                        class="bg-indigo-600 text-white p-3 rounded-full w-12 h-12 flex items-center justify-center shadow-lg active:scale-90 transition-transform shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9-2-9-18-9 18 9 2zm0 0v-8" />
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
 
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
         
+        // Configuração do Chat
         window.enviar = async () => {
             const input = document.getElementById("input");
             const chat = document.getElementById("chat");
@@ -90,7 +105,7 @@
             input.value = "";
             btn.disabled = true;
 
-            // Pergunta do usuário
+            // 1. Pergunta do Usuário
             chat.innerHTML += `
                 <div class="flex justify-end">
                     <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm text-sm">
@@ -100,25 +115,41 @@
             
             chat.scrollTop = chat.scrollHeight;
 
+            // 2. Animação de Digitando
+            const aguarde = document.createElement("div");
+            aguarde.id = "status-aguarde";
+            aguarde.className = "flex justify-start";
+            aguarde.innerHTML = `
+                <div class="bg-white border border-indigo-100 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-3">
+                    <div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>`;
+            chat.appendChild(aguarde);
+            chat.scrollTop = chat.scrollHeight;
+
             try {
                 const genAI = new GoogleGenerativeAI(apiKey);
+                // Utilizando gemini-1.5-flash que é excelente para respostas rápidas
                 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+                
                 const result = await model.generateContent(texto);
                 const response = await result.response;
+                const respostaTexto = response.text();
+
+                if (document.getElementById("status-aguarde")) document.getElementById("status-aguarde").remove();
                 
                 chat.innerHTML += `
                     <div class="flex justify-start">
                         <div class="bg-white border border-indigo-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm text-sm leading-relaxed">
-                            ${response.text().replace(/\n/g, '<br>')}
+                            ${respostaTexto.replace(/\n/g, '<br>')}
                         </div>
                     </div>`;
 
             } catch (e) {
-                alert("Erro: " + e.message);
+                if (document.getElementById("status-aguarde")) document.getElementById("status-aguarde").remove();
+                alert("Erro: Verifique sua chave API ou conexão.");
             } finally {
                 btn.disabled = false;
                 chat.scrollTop = chat.scrollHeight;
-                // Re-foca o input para manter o teclado aberto (opcional)
                 input.focus();
             }
         }
@@ -126,6 +157,29 @@
         document.getElementById("input").addEventListener("keypress", (e) => {
             if (e.key === "Enter") window.enviar();
         });
+    </script>
+
+    <script>
+        // SCRIPT DE AJUSTE DE VISOR (PARA MODO APP/PWA)
+        const vvp = window.visualViewport;
+        const appContainer = document.getElementById('app-container');
+
+        function resizeApp() {
+            // Define a altura do container baseado no que é REALMENTE visível
+            appContainer.style.height = vvp.height + 'px';
+            
+            // Força o scroll para o final caso o teclado suba
+            window.scrollTo(0, 0);
+            const chat = document.getElementById('chat');
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        if (vvp) {
+            vvp.addEventListener('resize', resizeApp);
+            vvp.addEventListener('scroll', resizeApp);
+            // Executa no início
+            window.addEventListener('load', resizeApp);
+        }
     </script>
 </body>
 </html>
