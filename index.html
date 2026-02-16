@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub IA Familiar</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans p-6">
+    <header class="mb-10 text-center">
+        <h1 class="text-3xl font-extrabold text-blue-500">Hub IA Familiar</h1>
+        <p class="text-gray-400 mt-2">Seus assistentes inteligentes em um só lugar</p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-6 max-w-md mx-auto">
+        <a href="legendas/index.html" class="bg-gray-800 p-6 rounded-3xl border border-gray-700 active:scale-95 transition-transform flex items-center gap-4">
+            <span class="text-4xl">📸</span>
+            <div>
+                <h2 class="font-bold text-lg">Legendas Instagram</h2>
+                <p class="text-gray-400 text-sm">Posts estruturados com seu tom.</p>
+            </div>
+        </a>
+
+        <a href="reforco/index.html" class="bg-gray-800 p-6 rounded-3xl border border-gray-700 active:scale-95 transition-transform flex items-center gap-4">
+            <span class="text-4xl">🎓</span>
+            <div>
+                <h2 class="font-bold text-lg">Mestra de Reforço</h2>
+                <p class="text-gray-400 text-sm">Apoio pedagógico para a banca.</p>
+            </div>
+        </a>
+
+        <button onclick="salvarChave()" class="mt-8 text-xs text-gray-500 underline">Configurar Gemini API Key</button>
+    </div>
+
+    <script>
+        function salvarChave() {
+            const key = prompt("Insira sua Gemini API Key:");
+            if(key) localStorage.setItem("gemini_key", key);
+        }
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
