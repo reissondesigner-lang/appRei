@@ -5,16 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mestra de Reforço</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+    /* Garante que o app ocupe a altura real disponível */
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        position: fixed; /* Evita o "bounce" elástico no iOS */
+        width: 100%;
+    }
+</style>
 </head>
-<body class="bg-indigo-50 text-gray-900 h-dvh flex flex-col overflow-hidden">
+<body class="bg-indigo-50 text-gray-900 h-dvh flex flex-col">
     <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md">
         <a href="../index.html">← Voltar</a>
         <h1 class="font-bold">Mestra de Reforço</h1>
     </div>
 
-    <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
-
-    <div class="p-4 bg-white border-t">
+<div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4">
+    </div>
+    <div class="p-4 bg-white border-t shrink-0">
+        <div class="max-w-4xl mx-auto">
         <input type="text" id="input" placeholder="Dúvida do aluno..." class="w-full border p-4 rounded-2xl mb-2 outline-none focus:border-indigo-500">
         <button onclick="enviar()" id="btn" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold">Ensinar Agora</button>
     </div>
