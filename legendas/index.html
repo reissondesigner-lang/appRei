@@ -22,7 +22,7 @@
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
         
-        const CONTEXTO = "EMPRESA: Minha Consultoria. TOM: Profissional. CTA: Link na Bio.";
+        const CONTEXTO = "EMPRESA: Debora Santos - Art Croche. TOM: Profissional e Amigável. CTA: Link na Bio.";
 
         window.gerar = async () => {
             const input = document.getElementById("input");
@@ -42,7 +42,7 @@ const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash",
     apiVersion: 'v1beta' // Adicione isso se o erro persistir
 });                
-                const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags.`;
+                const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags. retorne somente a legenda pronta para uso sem mais textos`;
                 
                 const result = await model.generateContent(prompt);
                 document.getElementById("chat").innerHTML = `<div class="bg-gray-800 p-4 rounded-xl whitespace-pre-wrap">${result.response.text()}</div>`;
