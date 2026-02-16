@@ -35,9 +35,9 @@ import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
             try {
                 const genAI = new GoogleGenerativeAI(apiKey);
-// Usar o modelo 'gemini-1.5-flash' ou 'gemini-1.5-flash-latest'
+// Usar o modelo 'gemini-2.5-flash' ou 'gemini-2.5-flash-latest'
 const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     apiVersion: 'v1beta' // Adicione isso se o erro persistir
 });                
                 // Envia sistema + historico + pergunta
