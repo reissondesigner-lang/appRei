@@ -20,7 +20,7 @@
     </div>
 
     <script type="module">
-        import { GoogleGenAI } from "https://esm.run/@google/generative-ai";
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
         
         const CONTEXTO = "EMPRESA: Minha Consultoria. TOM: Profissional. CTA: Link na Bio.";
 
@@ -36,7 +36,7 @@
             btn.disabled = true;
 
             try {
-                const genAI = new GoogleGenAI(apiKey);
+                const genAI = new GoogleGenerativeAI(apiKey);
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 
                 const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags.`;
