@@ -62,7 +62,7 @@
 
             try {
                 const genAI = new GoogleGenerativeAI(apiKey);
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
                 const CONTEXTO = "Crocheteira: Debora Santos - Art Croche. TOM: Profissional e Amigável. CTA: Link na Bio.";
                 const promptFinal = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda em português para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags. Retorne SOMENTE a legenda pronta para uso, sem comentários adicionais.`;
