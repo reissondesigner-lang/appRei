@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mestra de Reforço</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-indigo-50 text-gray-900 h-screen flex flex-col">
+    <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md">
+        <a href="../index.html">← Voltar</a>
+        <h1 class="font-bold">Mestra de Reforço</h1>
+    </div>
+
+    <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+
+    <div class="p-4 bg-white border-t">
+        <input type="text" id="input" placeholder="Dúvida do aluno..." class="w-full border p-4 rounded-2xl mb-2 outline-none focus:border-indigo-500">
+        <button onclick="enviar()" id="btn" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold">Ensinar Agora</button>
+    </div>
+
+    <script type="module">
+        import { GoogleGenAI } from "https://esm.run/@google/generative-ai";
+        
+        let historico = [];
+        const SYSTEM = "Você ajuda uma professora de reforço. Explique para ela (técnico) e para a criança (analogia).";
+
+        window.enviar = async () => {
+            const input = document.getElementById("input");
+            const btn = document.getElementById("btn");
+            const apiKey = localStorage.getItem("gemini_key");
+            
+            const texto = input.value;
+            input.value = "";
+            btn.disabled = true;
+
+            try {
+                const genAI = new GoogleGenAI(apiKey);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                
+                // Envia sistema + historico + pergunta
+                const result = await model.generateContent([SYSTEM, ...historico, texto]);
+                const resposta = result.response.text();
+
+                historico.push(`User: ${texto}`, `AI: ${resposta}`);
+                if(historico.length > 6) historico.splice(0, 2);
+
+                document.getElementById("chat").innerHTML += `
+                    <div class="bg-indigo-100 p-3 rounded-xl ml-8"><b>Dúvida:</b> ${texto}</div>
+                    <div class="bg-white border p-3 rounded-xl mr-8 shadow-sm">${resposta.replace(/\n/g, '<br>')}</div>
+                `;
+            } catch (e) { alert("Erro. Verifique a chave ou saldo."); }
+            finally { btn.disabled = false; }
+        }
+    </script>
+</body>
+</html>
