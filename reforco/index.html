@@ -22,38 +22,55 @@
     <script type="module">
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
         let historico = [];
-        const SYSTEM = "Você ajuda uma professora de reforço. Explique para ela (técnico) e para a criança (analogia).";
+        const SYSTEM = "Você ajuda uma professora de reforço. Explique para ela (técnico) e para a criança (analogia). direto ao ponto economizando tokens";
 
         window.enviar = async () => {
-            const input = document.getElementById("input");
-            const btn = document.getElementById("btn");
-            const apiKey = localStorage.getItem("gemini_key");
-            
-            const texto = input.value;
-            input.value = "";
-            btn.disabled = true;
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+    const btn = document.getElementById("btn");
+    const apiKey = localStorage.getItem("gemini_key");
+    
+    const texto = input.value;
+    if (!texto || !apiKey) return;
 
-            try {
-                const genAI = new GoogleGenerativeAI(apiKey);
-// Usar o modelo 'gemini-2.5-flash' ou 'gemini-2.5-flash-latest'
-const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
-    apiVersion: 'v1beta' // Adicione isso se o erro persistir
-});                
-                // Envia sistema + historico + pergunta
-                const result = await model.generateContent([SYSTEM, ...historico, texto]);
-                const resposta = result.response.text();
+    input.value = "";
+    btn.disabled = true;
 
-                historico.push(`User: ${texto}`, `AI: ${resposta}`);
-                if(historico.length > 6) historico.splice(0, 2);
+    // 1. Mostra a pergunta do usuário
+    chat.innerHTML += `<div class="bg-blue-100 p-3 rounded-lg mb-2"><b>Você:</b> ${texto}</div>`;
+    
+    // 2. Cria o indicador de aguarde
+    const aguarde = document.createElement("div");
+    aguarde.id = "status-aguarde";
+    aguarde.innerText = "aguarde...";
+    aguarde.className = "text-gray-500 italic p-2"; // apenas uma cor cinza discreta
+    chat.appendChild(aguarde);
+    chat.scrollTop = chat.scrollHeight;
 
-                document.getElementById("chat").innerHTML += `
-                    <div class="bg-indigo-100 p-3 rounded-xl ml-8"><b>Dúvida:</b> ${texto}</div>
-                    <div class="bg-white border p-3 rounded-xl mr-8 shadow-sm">${resposta.replace(/\n/g, '<br>')}</div>
-                `;
-            } catch (e) { alert("Erro. Verifique a chave ou saldo."); }
-            finally { btn.disabled = false; }
-        }
+    try {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+        
+        const result = await model.generateContent(texto);
+        const response = await result.response;
+        const respostaTexto = response.text();
+
+        // 3. Remove o "aguarde..."
+        const status = document.getElementById("status-aguarde");
+        if (status) status.remove();
+        
+        // 4. Mostra a resposta
+        chat.innerHTML += `<div class="bg-white border p-3 rounded-lg mb-4">${respostaTexto.replace(/\n/g, '<br>')}</div>`;
+
+    } catch (e) {
+        const status = document.getElementById("status-aguarde");
+        if (status) status.remove();
+        alert("Erro: " + e.message);
+    } finally {
+        btn.disabled = false;
+        chat.scrollTop = chat.scrollHeight;
+    }
+}
     </script>
 </body>
 </html>
