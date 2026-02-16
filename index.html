@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hub IA Familiar</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/appRei/manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -91,8 +91,11 @@
         atualizarStatus();
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+    navigator.serviceWorker.register('/appRei/sw.js')
+      .then(() => console.log('Service Worker registrado!'))
+      .catch(err => console.error('Erro SW:', err));
+}
+
     </script>
 </body>
 </html>
