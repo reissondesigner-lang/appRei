@@ -23,32 +23,55 @@
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
         
         const CONTEXTO = "EMPRESA: Debora Santos - Art Croche. TOM: Profissional e Amigável. CTA: Link na Bio.";
-
-        window.gerar = async () => {
-            const input = document.getElementById("input");
-            const btn = document.getElementById("btn");
-            const apiKey = localStorage.getItem("gemini_key");
-            
-            if(!apiKey) return alert("Configure a chave no menu inicial!");
-            
-            const textoUser = input.value;
-            input.value = "";
-            btn.disabled = true;
-
-            try {
-                const genAI = new GoogleGenerativeAI(apiKey);
-// Usar o modelo 'gemini-2.5-flash' ou 'gemini-1.5-flash-latest'
-const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
-    apiVersion: 'v1beta' // Adicione isso se o erro persistir
-});                
-                const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags. retorne somente a legenda pronta para uso sem mais textos`;
+ const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags. retorne somente a legenda pronta para uso sem mais textos`;
                 
-                const result = await model.generateContent(prompt);
-                document.getElementById("chat").innerHTML = `<div class="bg-gray-800 p-4 rounded-xl whitespace-pre-wrap">${result.response.text()}</div>`;
-            } catch (e) { alert("Erro na API."); }
-            finally { btn.disabled = false; }
-        }
+        window.enviar = async () => {
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+    const btn = document.getElementById("btn");
+    const apiKey = localStorage.getItem("gemini_key");
+    
+    const texto = input.value;
+    if (!texto || !apiKey) return;
+
+    input.value = "";
+    btn.disabled = true;
+
+    // 1. Mostra a pergunta do usuário
+    chat.innerHTML += `<div class="bg-blue-100 p-3 rounded-lg mb-2"><b>Você:</b> ${texto}</div>`;
+    
+    // 2. Cria o indicador de aguarde
+    const aguarde = document.createElement("div");
+    aguarde.id = "status-aguarde";
+    aguarde.innerText = "aguarde...";
+    aguarde.className = "text-gray-500 italic p-2"; // apenas uma cor cinza discreta
+    chat.appendChild(aguarde);
+    chat.scrollTop = chat.scrollHeight;
+
+    try {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        
+        const result = await model.generateContent(texto);
+        const response = await result.response;
+        const respostaTexto = response.text();
+
+        // 3. Remove o "aguarde..."
+        const status = document.getElementById("status-aguarde");
+        if (status) status.remove();
+        
+        // 4. Mostra a resposta
+        chat.innerHTML += `<div class="bg-white border p-3 rounded-lg mb-4">${respostaTexto.replace(/\n/g, '<br>')}</div>`;
+
+    } catch (e) {
+        const status = document.getElementById("status-aguarde");
+        if (status) status.remove();
+        alert("Erro: " + e.message);
+    } finally {
+        btn.disabled = false;
+        chat.scrollTop = chat.scrollHeight;
+    }
+}
     </script>
 </body>
 </html>
