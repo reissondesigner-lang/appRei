@@ -1,0 +1,9 @@
+{
+  "name": "Hub IA Familiar",
+  "short_name": "MeusAppsIA",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#3b82f6",
+  "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/1698/1698535.png", "sizes": "512x512", "type": "image/png" }]
+}
