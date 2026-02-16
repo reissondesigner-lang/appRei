@@ -22,7 +22,7 @@
     <script type="module">
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
         let historico = [];
-        const SYSTEM = "Você ajuda uma professora principiante de reforço. Explique em português para ela (técnico) e para a criança (analogia). direto ao ponto economizando tokens";
+        const SYSTEM = "Atue como tutor de reforço: explique conceitos brevemente com termos técnicos leves para a professora e analogias lúdicas para o aluno, incluindo sempre definição e exemplo. Sempre em português";
 
         window.enviar = async () => {
     const input = document.getElementById("input");
