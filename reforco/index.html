@@ -2,86 +2,123 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mestra de Reforço</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-    /* Garante que o app ocupe a altura real disponível */
-    html, body {
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-        position: fixed; /* Evita o "bounce" elástico no iOS */
-        width: 100%;
-    }
-</style>
+        /* Bloqueia o scroll do corpo para evitar que o layout suba de forma errada */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+        
+        /* Ajuste fino para a altura dinâmica (Fallback para navegadores antigos) */
+        .h-dvh {
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        /* Deixa a barra de rolagem mais discreta (opcional) */
+        #chat::-webkit-scrollbar {
+            width: 4px;
+        }
+        #chat::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body class="bg-indigo-50 text-gray-900 h-dvh flex flex-col">
-    <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md">
-        <a href="../index.html">← Voltar</a>
+
+    <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md shrink-0">
+        <a href="../index.html" class="hover:underline">← Voltar</a>
         <h1 class="font-bold">Mestra de Reforço</h1>
     </div>
 
-<div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4">
+    <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="bg-indigo-100 p-3 rounded-lg text-sm text-indigo-800 italic">
+            Olá! Digite um tema para eu explicar de forma simples.
+        </div>
     </div>
+
     <div class="p-4 bg-white border-t shrink-0">
         <div class="max-w-4xl mx-auto">
-        <input type="text" id="input" placeholder="Dúvida do aluno..." class="w-full border p-4 rounded-2xl mb-2 outline-none focus:border-indigo-500">
-        <button onclick="enviar()" id="btn" class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold">Ensinar Agora</button>
+            <input type="text" id="input" placeholder="Dúvida do aluno..." 
+                   class="w-full border p-4 rounded-2xl mb-2 outline-none focus:border-indigo-500 shadow-sm"
+                   autocomplete="off">
+            <button onclick="enviar()" id="btn" 
+                    class="w-full bg-indigo-600 text-white p-4 rounded-2xl font-bold active:bg-indigo-700 transition-colors">
+                Ensinar Agora
+            </button>
+        </div>
     </div>
 
     <script type="module">
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
-        let historico = [];
-        const SYSTEM = "Atue como tutor de reforço: explique conceitos brevemente com termos técnicos leves para a professora e analogias lúdicas para o aluno, incluindo sempre definição e exemplo. Sempre em português";
-
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
+        
         window.enviar = async () => {
-    const input = document.getElementById("input");
-    const chat = document.getElementById("chat");
-    const btn = document.getElementById("btn");
-    const apiKey = localStorage.getItem("gemini_key");
-    
-    const texto = input.value;
-    if (!texto || !apiKey) return;
+            const input = document.getElementById("input");
+            const chat = document.getElementById("chat");
+            const btn = document.getElementById("btn");
+            const apiKey = localStorage.getItem("gemini_key");
+            
+            const texto = input.value.trim();
+            if (!texto || !apiKey) return;
 
-    input.value = "";
-    btn.disabled = true;
+            // Limpa input e trava botão
+            input.value = "";
+            btn.disabled = true;
+            input.focus(); // Mantém o teclado aberto no celular
 
-    // 1. Mostra a pergunta do usuário
-    chat.innerHTML += `<div class="bg-blue-100 p-3 rounded-lg mb-2"><b>Você:</b> ${texto}</div>`;
-    
-    // 2. Cria o indicador de aguarde
-    const aguarde = document.createElement("div");
-    aguarde.id = "status-aguarde";
-    aguarde.innerText = "aguarde...";
-    aguarde.className = "text-gray-500 italic p-2"; // apenas uma cor cinza discreta
-    chat.appendChild(aguarde);
-    chat.scrollTop = chat.scrollHeight;
+            // 1. Mostra a pergunta do usuário
+            chat.innerHTML += `<div class="flex justify-end"><div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm"><b>Você:</b> ${texto}</div></div>`;
+            
+            // 2. Cria o indicador de aguarde
+            const aguarde = document.createElement("div");
+            aguarde.id = "status-aguarde";
+            aguarde.innerText = "Pensando na melhor explicação...";
+            aguarde.className = "text-gray-500 italic p-2 text-sm";
+            chat.appendChild(aguarde);
+            chat.scrollTop = chat.scrollHeight;
 
-    try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
-        
-        const result = await model.generateContent(texto);
-        const response = await result.response;
-        const respostaTexto = response.text();
+            try {
+                const genAI = new GoogleGenerativeAI(apiKey);
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+                
+                const result = await model.generateContent(texto);
+                const response = await result.response;
+                const respostaTexto = response.text();
 
-        // 3. Remove o "aguarde..."
-        const status = document.getElementById("status-aguarde");
-        if (status) status.remove();
-        
-        // 4. Mostra a resposta
-        chat.innerHTML += `<div class="bg-white border p-3 rounded-lg mb-4">${respostaTexto.replace(/\n/g, '<br>')}</div>`;
+                // 3. Remove o "aguarde..."
+                const status = document.getElementById("status-aguarde");
+                if (status) status.remove();
+                
+                // 4. Mostra a resposta com formatação simples
+                chat.innerHTML += `
+                    <div class="flex justify-start">
+                        <div class="bg-white border border-indigo-100 p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm">
+                            ${respostaTexto.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>`;
 
-    } catch (e) {
-        const status = document.getElementById("status-aguarde");
-        if (status) status.remove();
-        alert("Erro: " + e.message);
-    } finally {
-        btn.disabled = false;
-        chat.scrollTop = chat.scrollHeight;
-    }
-}
+            } catch (e) {
+                const status = document.getElementById("status-aguarde");
+                if (status) status.remove();
+                alert("Erro: " + e.message);
+            } finally {
+                btn.disabled = false;
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+
+        // Permitir envio com a tecla Enter
+        document.getElementById("input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") window.enviar();
+        });
     </script>
 </body>
 </html>
