@@ -37,8 +37,11 @@
 
             try {
                 const genAI = new GoogleGenerativeAI(apiKey);
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                
+// Usar o modelo 'gemini-1.5-flash' ou 'gemini-1.5-flash-latest'
+const model = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-flash",
+    apiVersion: 'v1beta' // Adicione isso se o erro persistir
+});                
                 const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags.`;
                 
                 const result = await model.generateContent(prompt);
