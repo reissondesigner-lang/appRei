@@ -1,13 +1,14 @@
 {
   "name": "Hub IA RD",
   "short_name": "MeusAppsIA",
-  "start_url": "/",
+  "start_url": "/appRei/",
+  "scope": "/appRei/",
   "display": "standalone",
   "background_color": "#111827",
   "theme_color": "#111827",
   "icons": [
     {
-      "src": "/icon-512.png",
+      "src": "/appRei/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
