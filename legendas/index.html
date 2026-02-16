@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Legendas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white h-screen flex flex-col">
+    <div class="p-4 border-b border-gray-800 flex justify-between items-center">
+        <a href="../index.html" class="text-blue-500">← Voltar</a>
+        <h1 class="font-bold">Legendas IA</h1>
+    </div>
+
+    <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+
+    <div class="p-4 bg-gray-800">
+        <textarea id="input" placeholder="Sobre o que é o post?" class="w-full bg-gray-700 p-3 rounded-xl mb-2 outline-none"></textarea>
+        <button onclick="gerar()" id="btn" class="w-full bg-blue-600 p-4 rounded-xl font-bold">Gerar Legenda</button>
+    </div>
+
+    <script type="module">
+        import { GoogleGenAI } from "https://esm.run/@google/generative-ai";
+        
+        const CONTEXTO = "EMPRESA: Minha Consultoria. TOM: Profissional. CTA: Link na Bio.";
+
+        window.gerar = async () => {
+            const input = document.getElementById("input");
+            const btn = document.getElementById("btn");
+            const apiKey = localStorage.getItem("gemini_key");
+            
+            if(!apiKey) return alert("Configure a chave no menu inicial!");
+            
+            const textoUser = input.value;
+            input.value = "";
+            btn.disabled = true;
+
+            try {
+                const genAI = new GoogleGenAI(apiKey);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                
+                const prompt = `Atue como Copywriter. Contexto: ${CONTEXTO}. Crie uma legenda para: ${textoUser}. Estruture com Gancho, Conteúdo, CTA e Hashtags.`;
+                
+                const result = await model.generateContent(prompt);
+                document.getElementById("chat").innerHTML = `<div class="bg-gray-800 p-4 rounded-xl whitespace-pre-wrap">${result.response.text()}</div>`;
+            } catch (e) { alert("Erro na API."); }
+            finally { btn.disabled = false; }
+        }
+    </script>
+</body>
+</html>
