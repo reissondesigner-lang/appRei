@@ -20,8 +20,7 @@
     </div>
 
     <script type="module">
-        import { GoogleGenAI } from "https://esm.run/@google/generative-ai";
-        
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
         let historico = [];
         const SYSTEM = "Você ajuda uma professora de reforço. Explique para ela (técnico) e para a criança (analogia).";
 
@@ -35,7 +34,7 @@
             btn.disabled = true;
 
             try {
-                const genAI = new GoogleGenAI(apiKey);
+                const genAI = new GoogleGenerativeAI(apiKey);
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 
                 // Envia sistema + historico + pergunta
