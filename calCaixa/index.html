@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Corte de Caixa</title>
+
+<style>
+    :root {
+        --bg: #f4f6f9;
+        --card: #ffffff;
+        --text: #222;
+        --primary: #4a90e2;
+        --secondary: #e4e7ec;
+    }
+
+    body.dark {
+        --bg: #1e1f26;
+        --card: #2c2f3a;
+        --text: #f4f4f4;
+        --primary: #5dade2;
+        --secondary: #3a3d4a;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        transition: 0.3s;
+    }
+
+    .calculator {
+        background: var(--card);
+        padding: 25px;
+        border-radius: 15px;
+        width: 300px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transition: 0.3s;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    input {
+        width: 93%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid var(--secondary);
+        font-size: 16px;
+        background: var(--secondary);
+        color: var(--text);
+        outline: none;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .calc { background: var(--primary); color: white; }
+    .clear { background: #e74c3c; color: white; }
+    .copy { background: #2ecc71; color: white; }
+    .darkmode { background: #555; color: white; margin-top:10px;  }
+
+    button:hover { opacity: 0.85; }
+
+    .result {
+        margin-top: 15px;
+        background: var(--secondary);
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        
+        min-height: 60px;
+        white-space: pre-line;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+ <button href="../index.html" class="clear">← Voltar</button>
+    <button class="darkmode" onclick="toggleDark()">🌙 Modo Escuro</button>   
+
+    <h2>📦 Corte de Caixa</h2>
+
+    <input type="number" id="comprimento" placeholder="Comprimento (cm)" step="any">
+    <input type="number" id="largura" placeholder="Largura (cm)" step="any">
+    <input type="number" id="altura" placeholder="Altura (cm)" step="any">
+
+    <div class="buttons">
+        <button class="calc" onclick="calcular()">Calcular</button>
+        <button class="clear" onclick="limpar()">Limpar</button>
+        <button class="copy" onclick="copiar()">Copiar</button>
+    </div>
+
+    <div class="result" id="resultado"></div>
+</div>
+
+<script>
+function calcular() {
+    const c = parseFloat(document.getElementById('comprimento').value) || 0;
+    const l = parseFloat(document.getElementById('largura').value) || 0;
+    const a = parseFloat(document.getElementById('altura').value) || 0;
+
+    const baseComp = c + 2 * a;
+    const baseLarg = l + 2 * a;
+    const baseAlt = a;
+
+    const tampaComp = c + a;
+    const tampaLarg = l + a;
+    const tampaAlt = a / 2;
+
+    const lenteComp = c - 2;
+    const lenteLarg = l - 2;
+
+    const resultadoTexto = 
+`Base: ${baseComp.toFixed(2)} cm x ${baseLarg.toFixed(2)} cm
+Altura da base: ${baseAlt} cm
+
+Tampa: ${tampaComp.toFixed(2)} cm x ${tampaLarg.toFixed(2)} cm
+Altura da Tampa: ${tampaAlt.toFixed(2)} cm
+
+Lente: ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm`;
+
+    document.getElementById('resultado').innerText = resultadoTexto;
+}
+
+function limpar() {
+    document.getElementById('comprimento').value = "";
+    document.getElementById('largura').value = "";
+    document.getElementById('altura').value = "";
+    document.getElementById('resultado').innerText = "";
+}
+
+function copiar() {
+    const texto = document.getElementById('resultado').innerText;
+    if(texto) {
+        navigator.clipboard.writeText(texto);
+        alert("Resultado copiado!");
+    }
+}
+
+function toggleDark() {
+    document.body.classList.toggle('dark');
+}
+</script>
+
+</body>
+</html>
