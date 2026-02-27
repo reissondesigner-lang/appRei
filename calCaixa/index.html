@@ -79,7 +79,7 @@
     .calc { background: var(--primary); color: white; }
     .clear { background: #e74c3c; color: white; }
     .copy { background: #2ecc71; color: white; }
-    .darkmode { background: #555; color: white; margin-top:10px;  }
+    .darkmode { background: #555; color: white; margin-left: 95px;  }
 
     button:hover { opacity: 0.85; }
 
@@ -100,7 +100,7 @@
 
 <div class="calculator">
     <a href="../index.html"> <button  class="clear" >← Voltar</button> </a>
-    <button class="darkmode" onclick="toggleDark()" style="margin-left: auto;">🌙 Modo Escuro</button>   
+    <button class="darkmode" onclick="toggleDark()" >🌙 Modo Escuro</button>   
     
     <h2>📦 Corte de Caixa</h2>
 
@@ -141,7 +141,13 @@ Altura da base: ${baseAlt} cm
 Tampa: ${tampaComp.toFixed(2)} cm x ${tampaLarg.toFixed(2)} cm
 Altura da Tampa: ${tampaAlt.toFixed(2)} cm
 
-Lente: ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm`;
+Lente: ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm
+
+margem da lente: 2cm
+
+Comprimento: ${c}cm
+largura: ${l}cm
+altura: ${a}cm`;
 
     document.getElementById('resultado').innerText = resultadoTexto;
 }
