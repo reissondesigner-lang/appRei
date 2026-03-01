@@ -16,30 +16,17 @@
             background-color: #1f2937;
             transform: scale(0.97);
         }
-        /* Pisca apenas no erro */
-        .status-alert {
-            animation: blink 1.2s infinite;
-            border-color: #ef4444;
-            color: #ef4444;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
     </style>
 </head>
 <body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col justify-center p-6 relative">
-
-    <button id="status-btn" 
-            class="absolute top-6 right-4 px-3 py-1 rounded-full border text-[9px] font-bold tracking-tighter transition-all active:scale-90">
-        <span id="status-text">VERIFICANDO</span>
-    </button>
 
     <header class="mb-10 text-center shrink-0">
         <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
             Hub IA Familiar
         </h1>
-        <p class="text-gray-500 mt-2 text-xs uppercase tracking-[0.2em] font-light">Seus assistentes em um só lugar</p>
+        <p class="text-gray-500 mt-2 text-xs uppercase tracking-[0.2em] font-light">
+            Seus assistentes em um só lugar
+        </p>
     </header>
 
     <div class="grid grid-cols-1 gap-4 max-w-md mx-auto w-full">
@@ -71,29 +58,12 @@
     </div>
 
     <script>
-    // 🔐 COLOQUE SUA CHAVE AQUI
-    const GEMINI_KEY = "AIzaSyB6TuJQvDL58TYSlTHIi2HKo3mwOyWu_V0";
-
-    function atualizarStatus() {
-        const btn = document.getElementById("status-btn");
-        const text = document.getElementById("status-text");
-
-        if (GEMINI_KEY && GEMINI_KEY.length > 10) {
-            btn.className = "absolute top-6 right-4 px-3 py-1 rounded-full border border-green-900 text-green-600 opacity-60 transition-all";
-            text.innerText = "API ON";
-        } else {
-            btn.className = "absolute top-6 right-4 px-3 py-1 rounded-full border text-red-500 status-alert";
-            text.innerText = "SEM API";
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/appRei/sw.js')
+                .then(() => console.log('Service Worker registrado!'))
+                .catch(err => console.error('Erro SW:', err));
         }
-    }
+    </script>
 
-    atualizarStatus();
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/appRei/sw.js')
-            .then(() => console.log('Service Worker registrado!'))
-            .catch(err => console.error('Erro SW:', err));
-    }
-</script>
 </body>
 </html>
