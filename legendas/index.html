@@ -54,7 +54,7 @@
 
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-
+        import { GEMINI_KEY } from "../config.js";
         // Função global de cópia (ajustada para remover <br>)
         window.copiarTexto = (btn, textoComBr) => {
             const textoLimpo = textoComBr.replace(/<br>/g, '\n');
@@ -73,10 +73,9 @@
             const input = document.getElementById("input");
             const chat = document.getElementById("chat");
             const btn = document.getElementById("btn");
-            const apiKey = localStorage.getItem("gemini_key");
 
             const textoUser = input.value.trim();
-            if (!textoUser || !apiKey) return;
+            if (!textoUser) return;
 
             input.value = "";
             btn.disabled = true;
@@ -102,7 +101,7 @@
             chat.scrollTop = chat.scrollHeight;
 
             try {
-                const genAI = new GoogleGenerativeAI(apiKey);
+                const genAI = new GoogleGenerativeAI(GEMINI_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
                 const CONTEXTO = "Crocheteira: Debora Santos - Art Croche. TOM: Profissional e Amigável. CTA: Link na Bio.";
