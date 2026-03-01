@@ -30,7 +30,7 @@
 </head>
 <body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col justify-center p-6 relative">
 
-    <button onclick="salvarChave()" id="status-btn" 
+    <button id="status-btn" 
             class="absolute top-6 right-4 px-3 py-1 rounded-full border text-[9px] font-bold tracking-tighter transition-all active:scale-90">
         <span id="status-text">VERIFICANDO</span>
     </button>
@@ -71,39 +71,29 @@
     </div>
 
     <script>
-        function atualizarStatus() {
-            const btn = document.getElementById("status-btn");
-            const text = document.getElementById("status-text");
-            const key = localStorage.getItem("gemini_key");
-            
-            if (key && key.length > 10) {
-                // MODO: ONLINE (Limpo, Verde, Sem Piscar)
-                btn.className = "absolute top-6 right-4 px-3 py-1 rounded-full border border-green-900 text-green-600 opacity-60 transition-all active:scale-90";
-                text.innerText = "API ON";
-            } else {
-                // MODO: CONFIG (Vermelho, Piscando)
-                btn.className = "absolute top-6 right-4 px-3 py-1 rounded-full border text-red-500 transition-all active:scale-90 status-alert";
-                text.innerText = "INSIRA API";
-            }
+    // 🔐 COLOQUE SUA CHAVE AQUI
+    const GEMINI_KEY = "AIzaSyB6TuJQvDL58TYSlTHIi2HKo3mwOyWu_V0";
+
+    function atualizarStatus() {
+        const btn = document.getElementById("status-btn");
+        const text = document.getElementById("status-text");
+
+        if (GEMINI_KEY && GEMINI_KEY.length > 10) {
+            btn.className = "absolute top-6 right-4 px-3 py-1 rounded-full border border-green-900 text-green-600 opacity-60 transition-all";
+            text.innerText = "API ON";
+        } else {
+            btn.className = "absolute top-6 right-4 px-3 py-1 rounded-full border text-red-500 status-alert";
+            text.innerText = "SEM API";
         }
+    }
 
-        function salvarChave() {
-            const currentKey = localStorage.getItem("gemini_key") || "";
-            const key = prompt("API Key:", currentKey);
-            if(key !== null) {
-                localStorage.setItem("gemini_key", key.trim());
-                atualizarStatus();
-            }
-        }
+    atualizarStatus();
 
-        atualizarStatus();
-
-        if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/appRei/sw.js')
-      .then(() => console.log('Service Worker registrado!'))
-      .catch(err => console.error('Erro SW:', err));
-}
-
-    </script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/appRei/sw.js')
+            .then(() => console.log('Service Worker registrado!'))
+            .catch(err => console.error('Erro SW:', err));
+    }
+</script>
 </body>
 </html>
