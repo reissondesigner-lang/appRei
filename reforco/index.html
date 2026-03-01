@@ -51,7 +51,7 @@
 
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";        
-        
+        import { GEMINI_KEY } from "../config.js";
         // --- PROMPT DE SISTEMA REINSERIDO AQUI ---
         const SYSTEM_PROMPT = "Atue como tutor de reforço: explique conceitos brevemente com termos técnicos leves para a tutora iniciante e analogias lúdicas para um aluno de 5 anos entender, incluindo sempre definição e exemplo. Sempre em português.";
 
@@ -59,10 +59,9 @@
             const input = document.getElementById("input");
             const chat = document.getElementById("chat");
             const btn = document.getElementById("btn");
-            const apiKey = localStorage.getItem("gemini_key");
             
             const texto = input.value.trim();
-            if (!texto || !apiKey) return;
+            if (!texto) return;
 
             input.value = "";
             btn.disabled = true;
@@ -89,7 +88,7 @@
             chat.scrollTop = chat.scrollHeight;
 
             try {
-                const genAI = new GoogleGenerativeAI(apiKey);
+                const genAI = new GoogleGenerativeAI(GEMINI_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
                 
                 // Enviando o Prompt de Sistema + a Pergunta do Usuário
