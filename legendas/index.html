@@ -129,7 +129,11 @@
 
             } catch (e) {
                 if (document.getElementById("status-aguarde")) document.getElementById("status-aguarde").remove();
-                alert("Erro: Verifique sua chave API.");
+                chat.innerHTML += `
+                    <div class="bg-red-600 p-3 rounded-xl text-white max-w-[85%]">
+                        <b>Erro:</b> ${e.message || "Erro desconhecido."}
+                    </div>
+                `;
             } finally {
                 btn.disabled = false;
                 chat.scrollTop = chat.scrollHeight;
