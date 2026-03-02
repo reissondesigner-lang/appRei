@@ -1,2 +1,2 @@
 // 🔐 SUA CHAVE FIXA AQUI
-export const GEMINI_KEY = "AIzaSyB6TuJQvDL58TYSlTHIi2HKo3mwOyWu_V0";
+export const GEMINI_KEY = "AIzaSyCfvDdS_kU4hTeBvSoF845BfeMIaSGh4YI";
