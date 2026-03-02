@@ -46,8 +46,7 @@
                        class="flex-1 bg-gray-700 border border-gray-600 p-3 rounded-full outline-none focus:border-blue-500 shadow-sm text-white"
                        autocomplete="off" autocorrect="off" spellcheck="false">
                 
-                <button onclick="gerar()" id="btn" 
-                        class="bg-blue-600 text-white p-3 rounded-full w-12 h-12 flex items-center justify-center shadow-lg active:scale-90 shrink-0 transition-transform">
+                <button id="btn" class="bg-blue-600 text-white p-3 rounded-full w-12 h-12 flex items-center justify-center shadow-lg active:scale-90 shrink-0 transition-transform">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9-2-9-18-9 18 9 2zm0 0v-8" />
                     </svg>
@@ -162,6 +161,7 @@
             vvp.addEventListener('resize', resizeApp);
             window.addEventListener('load', resizeApp);
         }
+        document.getElementById("btn").addEventListener("click", window.gerar);
     </script>
 </body>
 </html>
