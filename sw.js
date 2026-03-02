@@ -2,15 +2,14 @@ const CACHE_NAME = 'my-cache-v1'; // Versão do cache
 
 // Arquivos essenciais a serem armazenados no cache
 const CACHE_URLS = [
-    '/',
-    '/index.html',
-    '/legendas/index.html',
-    '/reforco/index.html',
-    '/calCaixa/index.html',
-    '/icon-512.png',
-    '/manifest.json',
-    '/config.js'
-    
+    BASE_PATH + '/',
+    BASE_PATH + '/index.html',
+    BASE_PATH + '/legendas/index.html',
+    BASE_PATH + '/reforco/index.html',
+    BASE_PATH + '/calCaixa/index.html',
+    BASE_PATH + '/icon-512.png',
+    BASE_PATH + '/manifest.json',
+    BASE_PATH + '/config.js'
 ];
 
 // Instalação do Service Worker
