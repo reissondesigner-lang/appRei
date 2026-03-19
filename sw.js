@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-cache-v1'; // Versão do cache
+const CACHE_NAME = 'my-cache-v2'; // Versão do cache
 
 // Arquivos essenciais a serem armazenados no cache
 const CACHE_URLS = [
