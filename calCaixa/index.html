@@ -137,30 +137,73 @@ function calcular() {
 
     const lenteComp = c - 2;
     const lenteLarg = l - 2;
+   const folhaW = 66;
+const folhaH = 48;
+
+// Função que testa se duas peças cabem na folha (considerando rotação)
+function cabemNaFolha(w1, h1, w2, h2) {
+    const possibilidades = [
+        // lado a lado horizontal
+        (w1 + w2 <= folhaW && Math.max(h1, h2) <= folhaH),
+        // lado a lado vertical
+        (h1 + h2 <= folhaH && Math.max(w1, w2) <= folhaW),
+
+        // peças rotacionadas
+        (h1 + w2 <= folhaW && Math.max(w1, h2) <= folhaH),
+        (w1 + h2 <= folhaW && Math.max(h1, w2) <= folhaH),
+
+        (h2 + w1 <= folhaW && Math.max(w2, h1) <= folhaH),
+        (w2 + h1 <= folhaW && Math.max(h2, w1) <= folhaH)
+    ];
+
+    return possibilidades.some(v => v);
+}
+
+// dimensões das peças
+const baseW = baseComp;
+const baseH = baseLarg;
+
+const tampaW = tampaComp;
+const tampaH = tampaLarg;
+
+// verifica se base + tampa cabem juntos
+const cabemJuntas = cabemNaFolha(baseW, baseH, tampaW, tampaH);
+
+// verifica se cada uma cabe sozinha
+const baseSozinha = (baseW <= folhaW && baseH <= folhaH) || (baseH <= folhaW && baseW <= folhaH);
+const tampaSozinha = (tampaW <= folhaW && tampaH <= folhaH) || (tampaH <= folhaW && tampaW <= folhaH);
+
+let folhasNecessarias = 2;
+
+if (cabemJuntas) {
+    folhasNecessarias = "1 Folha";
+} else if (baseSozinha && tampaSozinha) {
+    folhasNecessarias = "2 Folhas";
+} else {
+    folhasNecessarias = "Não cabe na folha 48x66";
+}
 
     const resultadoTexto = 
-`Base: ${baseComp.toFixed(2)} cm x ${baseLarg.toFixed(2)} cm
+`<strong>Base:</strong> ${baseComp.toFixed(2)} cm x ${baseLarg.toFixed(2)} cm
 Altura da base: ${baseAlt} cm
 
-Tampa: ${tampaComp.toFixed(2)} cm x ${tampaLarg.toFixed(2)} cm
+<strong>Tampa:</strong> ${tampaComp.toFixed(2)} cm x ${tampaLarg.toFixed(2)} cm
 Altura da Tampa: ${tampaAlt.toFixed(2)} cm
 
-Lente: ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm
+<strong>Lente:</strong> ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm -> 2cm
+<strong>Folhas necessárias:</strong> ${folhasNecessarias}
 
-margem da lente: 2cm
 
-Comprimento: ${c}cm
-largura: ${l}cm
-altura: ${a}cm`;
+`;
 
-    document.getElementById('resultado').innerText = resultadoTexto;
+    document.getElementById('resultado').innerHTML = resultadoTexto;
 }
 
 function limpar() {
     document.getElementById('comprimento').value = "";
     document.getElementById('largura').value = "";
     document.getElementById('altura').value = "";
-    document.getElementById('resultado').innerText = "";
+    document.getElementById('resultado').innerHTML = "";
 }
 
 function copiar() {
