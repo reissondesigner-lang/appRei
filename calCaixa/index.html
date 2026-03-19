@@ -184,17 +184,14 @@ if (cabemJuntas) {
 }
 
     const resultadoTexto = 
-`<strong>Base:</strong> ${baseComp.toFixed(2)} cm x ${baseLarg.toFixed(2)} cm
-Altura da base: ${baseAlt} cm
+`<strong>*Base:*</strong> ${baseComp.toFixed(2)} cm x ${baseLarg.toFixed(2)} cm
+*Altura da base:* ${baseAlt} cm
 
-<strong>Tampa:</strong> ${tampaComp.toFixed(2)} cm x ${tampaLarg.toFixed(2)} cm
-Altura da Tampa: ${tampaAlt.toFixed(2)} cm
+<strong>*Tampa:*</strong> ${tampaComp.toFixed(2)} cm x ${tampaLarg.toFixed(2)} cm
+*Altura da Tampa:* ${tampaAlt.toFixed(2)} cm
 
-<strong>Lente:</strong> ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm -> 2cm
-<strong>Folhas necessárias:</strong> ${folhasNecessarias}
-
-
-`;
+<strong>*Lente:*</strong> ${lenteComp.toFixed(2)} cm x ${lenteLarg.toFixed(2)} cm -> 2cm
+<strong>*Folhas necessárias:*</strong> ${folhasNecessarias}`;
 
     document.getElementById('resultado').innerHTML = resultadoTexto;
 }
